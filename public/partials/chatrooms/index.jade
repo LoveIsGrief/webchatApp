@@ -1,0 +1,5 @@
+div
+	h1 Chatrooms
+	ul
+		li(ng-repeat="chatroom in chatrooms")
+			a(ui-sref="chatrooms.show({ chatroom: chatroom.name})") {{chatroom.name}}

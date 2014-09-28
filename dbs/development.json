@@ -1,0 +1,14 @@
+{
+	"chatrooms": {
+		"offtopic":{
+			"name": "offtopic",
+			"messages": [
+				{
+					"datetime": "2014-09-27T14:51:06.048Z",
+					"sender": "herp",
+					"content": "<h1>ROFL!</h1><script>alert(\"hacked!!!!\")</script>"
+				}
+			]
+		}
+	}
+}

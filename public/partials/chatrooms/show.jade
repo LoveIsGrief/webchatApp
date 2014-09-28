@@ -1,0 +1,10 @@
+h1 {{chatroom.name}}
+
+#discussion
+	table
+		tr(ng-repeat="message in chatroom.messages")
+			td {{message.datetime}}
+			td {{message.sender}}
+			td
+				p(ng-bind-html="message.content")
+
