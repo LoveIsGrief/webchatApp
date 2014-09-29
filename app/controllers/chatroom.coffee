@@ -3,20 +3,9 @@ router = express.Router()
 
 module.exports = (app) ->
 
-	# Attempts to retrieve a chatroom
-	# returns all chatrooms if no chatroom is given
-	router.use (req, res, next) ->
-		if Object.keys(req.params).length == 0
-			console.log get "chatrooms"
-			res.send app.get "chatrooms"
-		else
-			console.log req.params
-			next()
-
 	router.get '/:chatroom', (req, res, next) ->
-		console.log "here"
+		chatroomName = req.params.chatroom
 		if chatroom = app.get("chatrooms")[chatroomName]
-			console.log chatroom
 			res.send chatroom
 		else
 			res.status(404).send "Chatroom not found"
@@ -32,6 +21,7 @@ module.exports = (app) ->
 			chatroom = chatrooms[chatroomName]
 			status = 200
 			if not chatroom
+				console.log "Creating new chatroom"
 				chatroom = {
 					name: chatroomName
 					chatroom: {messages: []}
@@ -42,6 +32,15 @@ module.exports = (app) ->
 
 		else
 			res.sendStatus 400 # Bad request
+
+	# Attempts to retrieve a chatroom
+	# returns all chatrooms if no chatroom is given
+	router.use (req, res, next) ->
+		if Object.keys(req.params).length == 0
+			res.send Object.keys(app.get "chatrooms")
+		else
+			console.log req.params
+			next()
 
 	# deleting a chatroom is done by socket.io
 	# when everyone exits a chatroom

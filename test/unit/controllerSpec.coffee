@@ -72,7 +72,7 @@ describe 'Webchat controllers', ->
 			$httpBackend = _$httpBackend_;
 			console.log "created httpBackend"
 			$httpBackend.expectGET('/api/chatrooms').
-			respond chatrooms
+			respond Object.keys(chatrooms)
 
 			scope = $rootScope.$new()
 			control = $controller "ChatroomListController",

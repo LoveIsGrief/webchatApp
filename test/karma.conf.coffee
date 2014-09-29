@@ -5,6 +5,7 @@ module.exports = (config)->
 
 		files : [
 			"public/components/angular/angular.js",
+			"public/components/socket.io-client/socket.io.js"
 			"public/components/angular-ui-router/release/angular-ui-router.js",
 			"public/components/angular-resource/angular-resource.js",
 			"public/components/angular-sanitize/angular-sanitize.js",
@@ -19,7 +20,7 @@ module.exports = (config)->
 
 		frameworks: ["jasmine"]
 
-		browsers : ["Firefox", "Chrome", "Opera"]
+		browsers : ["Firefox"] #, "Chrome", "Opera"]
 
 		preprocessors:
 			"**/*.coffee": ["coffee"]

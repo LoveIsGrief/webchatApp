@@ -8,3 +8,8 @@ h1 {{chatroom.name}}
 			td
 				p(ng-bind-html="message.content")
 
+form(action="")
+	input(autocomplete="off" ng-model="message" placeholder="Type a message here")
+	button(ng-click="sendMessage()") Send
+
+input(type="text" ng-model="username" placeholder="Enter your username here")

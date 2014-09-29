@@ -8,14 +8,19 @@ html(lang='en' ng-app="webChatApp")
       link(rel='stylesheet', href='/css/style.css')
     block js
       script(src='http://localhost:35729/livereload.js')
+        //- Socket io
+      script(src='/components/socket.io-client/socket.io.js')
+
+        //- Angular JS
       script(src='/components/angular/angular.js')
       script(src='/components/angular-bootstrap/ui-bootstrap.js')
       script(src='/components/angular-sanitize/angular-sanitize.js')
       script(src='/components/angular-ui-router/release/angular-ui-router.js')
       script(src='/components/angular-resource/angular-resource.js')
-      script(src="/js/app.js")
-      script(src="/js/routes.js")
+      script(src='/js/services/socket.js')
       script(src="/js/resources/Chatroom.js")
       script(src="/js/controllers/ChatroomController.js")
+      script(src="/js/app.js")
+      script(src="/js/routes.js")
   body
     block content

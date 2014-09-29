@@ -3,6 +3,7 @@ webChatApp = angular.module "webChatApp", [
 		"ui.router"
 		"chatroomControllers"
 		"chatroomResources"
+		"socketServices"
 	]
 
 webChatApp.config ($locationProvider) ->

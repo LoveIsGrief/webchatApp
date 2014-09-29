@@ -25,7 +25,6 @@ module.exports = (app, config) ->
 
   controllers = glob.sync config.root + '/app/controllers/**/*.coffee'
   controllers.forEach (controller) ->
-    console.log "requiring: #{controller}"
     require(controller)(app);
 
   # File db

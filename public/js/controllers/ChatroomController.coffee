@@ -10,7 +10,7 @@ ChatroomListController = ($scope, Chatroom) ->
 	# async call that returns a list of chatrooms from the backend
 	Chatroom.query {}, (data) ->
 		$scope.chatrooms = data
-		console.log "success"
+		console.log "got chatrooms"
 
 
 chatroomControllers.controller( "ChatroomListController", ChatroomListController,
@@ -18,18 +18,33 @@ chatroomControllers.controller( "ChatroomListController", ChatroomListController
 
 
 # Used to control 1 chatroom
-ChatroomController = ($scope, Chatroom, $state) ->
+ChatroomController = ($scope, Chatroom, $state, Socket) ->
 
 	console.log "Created ChatroomController"
 	$scope.chatroom = { name: "", messages: []}
+	$scope.message = "Type a message here"
+	$scope.username = "herp"
 
 	console.log "getting chatroom: #{chatroom = $state.params.chatroom}"
-	Chatroom.query {chatroom: chatroom}, (data) ->
+	Chatroom.get {chatroom: chatroom}, (data) ->
 			$scope.chatroom =  data
-			console.log "success!"
+			console.log "got chatroom #{chatroom}!"
 		,(httpResponse)->
 			console.error "Couldn't retrieve: #{chatroom}"
 
+	Socket.on "chat message", (message) ->
+		console.log message
+		$scope.chatroom.messages.push message
+
+	$scope.sendMessage = ->
+		console.log Socket.emit
+		Socket.emit "chat message",
+			chatroom: $scope.chatroom.name
+			sender: $scope.username
+			message: $scope.message
+		$scope.message = ""
+
+
 
 chatroomControllers.controller( "ChatroomController", ChatroomController,
-	["Chatroom", "$state"])
+	["Chatroom", "$state", "Socket"])
