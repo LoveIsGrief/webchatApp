@@ -1,5 +1,5 @@
 
-describe 'webChatApp', ->
+describe "webChatApp", ->
 
 	it "should have a root with a list of chatrooms" , ->
 		browser.get "/"

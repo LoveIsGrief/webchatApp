@@ -1,5 +1,5 @@
 
-describe 'Webchat controllers', ->
+describe "Webchat controllers", ->
 
 	chatroom = "offtopic"
 	chatrooms = "offtopic":
@@ -42,7 +42,7 @@ describe 'Webchat controllers', ->
 		# Handle a call to the webserver to GET a chatroom
 		beforeEach inject (_$httpBackend_, $rootScope, $controller, Chatroom) ->
 			$httpBackend = _$httpBackend_;
-			$httpBackend.expectGET('/api/chatrooms/offtopic').
+			$httpBackend.expectGET("/api/chatrooms/offtopic").
 			respond chatrooms[chatroom]
 
 
@@ -71,7 +71,7 @@ describe 'Webchat controllers', ->
 		beforeEach inject (_$httpBackend_, $rootScope, $controller, Chatroom) ->
 			$httpBackend = _$httpBackend_;
 			console.log "created httpBackend"
-			$httpBackend.expectGET('/api/chatrooms').
+			$httpBackend.expectGET("/api/chatrooms").
 			respond Object.keys(chatrooms)
 
 			scope = $rootScope.$new()

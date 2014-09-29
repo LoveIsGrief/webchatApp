@@ -1,9 +1,9 @@
-express  = require 'express'
+express  = require "express"
 router = express.Router()
 
 module.exports = (app) ->
 
-	router.get '/:chatroom', (req, res, next) ->
+	router.get "/:chatroom", (req, res, next) ->
 		chatroomName = req.params.chatroom
 		if chatroom = app.get("chatrooms")[chatroomName]
 			res.send chatroom
@@ -12,7 +12,7 @@ module.exports = (app) ->
 
 	# Creates a chatroom if inexistent
 	# Returns one if it is
-	# Errors if chatroom param isn't given
+	# Errors if chatroom param isn"t given
 	router.post "/:chatroom", (req, res, next) ->
 
 
@@ -46,5 +46,5 @@ module.exports = (app) ->
 	# deleting a chatroom is done by socket.io
 	# when everyone exits a chatroom
 
-	app.use '/api/chatrooms/', router
+	app.use "/api/chatrooms/", router
 

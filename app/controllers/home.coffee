@@ -1,10 +1,10 @@
-express  = require 'express'
+express  = require "express"
 router = express.Router()
 
 module.exports = (app) ->
-  app.use '/', router
+  app.use "/", router
 
 router.use (req, res, next) ->
 
-    res.render 'index',
-      title: 'Chatrooms'
+    res.render "index",
+      title: "Chatrooms"
