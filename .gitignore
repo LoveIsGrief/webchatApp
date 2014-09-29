@@ -11,3 +11,4 @@ public/**/*.html
 public/**/*.js
 app/controllers/*.js
 config/*.js
+test/unit/*.js
