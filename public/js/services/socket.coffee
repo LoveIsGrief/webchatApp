@@ -1,9 +1,6 @@
 socketServices = angular.module "socketServices", []
 
 Socket = ($location, $rootScope)->
-	# Init in different namespace
-	# for each different chatroom
-	# socket = io($location.url())
 	socket = io()
 
 	console.log "socket.io initialized"

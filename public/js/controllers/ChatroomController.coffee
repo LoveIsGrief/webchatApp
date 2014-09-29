@@ -28,10 +28,13 @@ ChatroomController = ($scope, Chatroom, $state, Socket) ->
 	console.log "getting chatroom: #{chatroom = $state.params.chatroom}"
 	Chatroom.get {chatroom: chatroom}, (data) ->
 			$scope.chatroom =  data
+			Socket.emit "join chatroom", $scope.chatroom.name
 			console.log "got chatroom #{chatroom}!"
 		,(httpResponse)->
 			console.error "Couldn't retrieve: #{chatroom}"
 
+
+	# Handle incoming messages
 	Socket.on "chat message", (message) ->
 		console.log message
 		$scope.chatroom.messages.push message

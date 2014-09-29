@@ -4,6 +4,10 @@ module.exports = (app, io) ->
 		console.log "a user connected"
 		console.log socket.	client
 
+		socket.on "join chatroom", (chatroom)->
+			console.log "joining chatroom: #{chatroom}"
+			socket.join chatroom
+
 		socket.on "chat message", (message)->
 			console.log "#{message.sender}: #{message.message}"
 
@@ -15,4 +19,4 @@ module.exports = (app, io) ->
 
 			app.get("chatrooms")[message.chatroom].messages.push dbMessage
 
-			io.emit "chat message", dbMessage
+			io.to(message.chatroom).emit "chat message", dbMessage

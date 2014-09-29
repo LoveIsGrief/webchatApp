@@ -37,6 +37,7 @@ module.exports = (app) ->
 	# returns all chatrooms if no chatroom is given
 	router.use (req, res, next) ->
 		if Object.keys(req.params).length == 0
+			console.log Object.keys(app.get "chatrooms")
 			res.send Object.keys(app.get "chatrooms")
 		else
 			console.log req.params
