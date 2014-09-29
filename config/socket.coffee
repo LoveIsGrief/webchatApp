@@ -1,7 +1,10 @@
 module.exports = (app, io) ->
 
 	io.on "connection", (socket) ->
-		console.log "a user connected"
+		console.log "a user(#{socket.id}) connected"
+
+		socket.on "disconnect", ->
+			console.log "user disconnected"
 
 		socket.on "join chatroom", (chatroom)->
 			console.log "joining chatroom: #{chatroom}"
@@ -11,6 +14,7 @@ module.exports = (app, io) ->
 			console.log "#{message.sender}: #{message.message}"
 
 			dbMessage = {
+				for: message.chatroom
 				datetime: (new Date()).toJSON()
 				sender: message.sender
 				content: message.message

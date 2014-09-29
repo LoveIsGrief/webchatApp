@@ -36,6 +36,8 @@ ChatroomController = ($scope, Chatroom, $state, Socket) ->
 
 	# Handle incoming messages
 	Socket.on "chat message", (message) ->
+		return if $scope.chatroom.name != message.for
+		delete message.for
 		console.log message
 		$scope.chatroom.messages.push message
 
