@@ -28,7 +28,7 @@ module.exports = (app, config) ->
     require(controller)(app);
 
   # File db
-  app.set "chatrooms", require(config.db)["chatrooms"]
+  app.set "chatrooms", require(config.db)
 
   # catch 404 and forward to error handler
   app.use (req, res, next) ->
