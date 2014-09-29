@@ -2,7 +2,6 @@ module.exports = (app, io) ->
 
 	io.on "connection", (socket) ->
 		console.log "a user connected"
-		console.log socket.	client
 
 		socket.on "join chatroom", (chatroom)->
 			console.log "joining chatroom: #{chatroom}"
