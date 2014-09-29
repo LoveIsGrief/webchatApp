@@ -31,19 +31,3 @@ grunt
 In seperate terminals, run the commands
 `NODE_ENV=test npm start` and
 `npm run protractor`
-
-# TODO
-
- ☐ e2e tests
-
- ✔ save db @ exit
-
- ☐ socket.io
-
- ☐ bootstrap
-
- ☐ embed.ly
-
- ☐ WebRTC
-
- ☐ LDAP
