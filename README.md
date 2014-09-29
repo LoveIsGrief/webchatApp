@@ -3,25 +3,47 @@
 
 # Description
 
+This is a simple application that should allow users to connect to chatrooms
+and start chatting.
+Once a chatroom has no members anymore (abandoned),
+then its history will be abandoned as well.
 
 # How to use
 
 ## Prerequisites
 
- * nodejs
+ * [nodejs](http://nodejs.org/download/)
 
 ## Starting up the server
 
-´´´shell
+```shell
 npm install
 grunt
-´´´
+```
+## Testing
+
+**Unit tests**
+
+`npm test`
+
+**E2E tests**
+
+In seperate terminals, run the commands
+`NODE_ENV=test npm start` and
+`npm run protractor`
 
 # TODO
 
  ☐ e2e tests
+
+ ☐ save db @ exit
+
  ☐ socket.io
+
  ☐ bootstrap
+
  ☐ embed.ly
+
  ☐ WebRTC
+
  ☐ LDAP
