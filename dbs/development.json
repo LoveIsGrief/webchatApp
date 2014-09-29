@@ -9,6 +9,16 @@
 					"content": "<h1>ROFL!</h1><script>alert(\"hacked!!!!\")</script>"
 				}
 			]
+	},
+		"ontopic":{
+			"name": "ontopic",
+			"messages": [
+				{
+					"datetime": "2014-09-29T19:59:06.048Z",
+					"sender": "derp",
+					"content": "<h1>HAXXX!</h1><script>alert(\"hacked!!!!\")</script>"
+				}
+			]
 		}
 	}
 }
