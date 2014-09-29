@@ -36,7 +36,7 @@ In seperate terminals, run the commands
 
  ☐ e2e tests
 
- ☐ save db @ exit
+ ✔ save db @ exit
 
  ☐ socket.io
 
