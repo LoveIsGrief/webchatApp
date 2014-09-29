@@ -9,3 +9,5 @@ npm-debug.log
 # Compiled files
 public/**/*.html
 public/**/*.js
+app/controllers/*.js
+config/*.js
