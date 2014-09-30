@@ -1,6 +1,8 @@
 .container-fluid
 	.page-header
-		h1 {{chatroom.name}}
+		h1
+			a(ui-sref="chatrooms.index") Chatrooms
+			span  / {{chatroom.name}}
 
 	#discussion.row
 		.col-sm-9
