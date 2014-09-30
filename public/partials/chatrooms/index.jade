@@ -1,5 +1,28 @@
 div
-	h1 Chatrooms
-	ul
-		li(ng-repeat="chatroom in chatrooms")
-			a(ui-sref="chatrooms.show({ chatroom: chatroom})") {{chatroom}}
+	div(class="jumbotron")
+		h1 Chatrooms
+	div.container-fluid
+		nav(
+			class="navbar navbar-default navbar-static-top"
+			role="navigation"
+		)
+			form(class="navbar-form navbar-left" role="search")
+
+				.input-group
+					input(
+						type="text"
+						name="chatroom-filter"
+						class="form-control"
+						placeholder="Filter chatrooms"
+						ng-model="chatroomFilter"
+					)
+					span.input-group-btn
+						button(type="button" class="btn btn-primary") Create chatroom
+
+		ul(class="list-group")
+			a(ng-repeat="chatroom in chatrooms| filter:chatroomFilter")
+				li(ui-sref="chatrooms.show({ chatroom: chatroom})" class="list-group-item")
+					{{chatroom}}
+					span(class="badge") {{chatroom}}.userCount
+					span(class="badge") {{chatroom}}.messageCount
+

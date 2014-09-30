@@ -6,6 +6,7 @@ ChatroomListController = ($scope, Chatroom) ->
 	console.log "Created ChatroomListController"
 
 	$scope.chatrooms = []
+	$scope.chatroomFilter = ""
 
 	# async call that returns a list of chatrooms from the backend
 	Chatroom.query {}, (data) ->
@@ -28,6 +29,7 @@ ChatroomController = ($scope, Chatroom, $state, Socket) ->
 	console.log "getting chatroom: #{chatroom = $state.params.chatroom}"
 	Chatroom.get {chatroom: chatroom}, (data) ->
 			$scope.chatroom =  data
+			$scope.chatroom.users = ["herp", "derp", "yomama"]
 			Socket.emit "join chatroom", $scope.chatroom.name
 			console.log "got chatroom #{chatroom}!"
 		,(httpResponse)->
