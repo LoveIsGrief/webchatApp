@@ -16,10 +16,29 @@ module.exports = (app, io) ->
 		socket.on "disconnect", ->
 			console.log "user disconnected"
 
-		socket.on "join chatroom", (chatroom)->
-			console.log "joining chatroom: #{chatroom}"
+		# Handle newcomers to chatroom
+		# Register them app-globally and broadcast their presence
+		socket.on "join chatroom", (event)->
+			user = event.who
+			return unless user
+			chatroom = event.chatroom
+			console.log "#{user} joining chatroom: #{chatroom}"
 			socket.join chatroom
 
+			# TODO Set username in cookie
+
+			# Register user and their chatroom
+			chatrooms = unless users[user]
+					users[user] = []
+				else
+					users[user]
+			chatrooms.push chatroom
+
+			io.to(chatroom).emit "chatroom users",
+					getUsersInChatroom(chatroom)
+
+		# Handle incoming chat messages
+		# Save them and broadcast them to chatroom members
 		socket.on "chat message", (message)->
 			console.log "#{message.sender}: #{message.message}"
 

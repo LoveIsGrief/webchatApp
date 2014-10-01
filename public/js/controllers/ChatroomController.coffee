@@ -26,11 +26,11 @@ ChatroomController = ($scope, Chatroom, $state, Socket) ->
 
 	# Need an object to pass through ng-if and similar scopes
 	$scope.user = {
-		name: "herp"
-		tempName: ""
-		changing: false
-		validation: ""
-		message: "Type a message here"
+		name: null
+		tempName: "" # Temp store while changing the name
+		changing: false # Indicates if we're changing the name
+		validation: "" # Used by ng-class when creating a username
+		message: ""
 	}
 
 	$scope.toggleUsernameChanging = ->
@@ -38,6 +38,8 @@ ChatroomController = ($scope, Chatroom, $state, Socket) ->
 		$scope.user.tempName = $scope.user.name
 		$scope.user.changing = ! $scope.user.changing
 
+	# Check if the username is unique to the server
+	# @returns Boolean
 	$scope.validateNewUsername = ->
 		console.log "old username: #{$scope.user.name}"
 		console.log "new username: #{$scope.user.tempName}"
@@ -48,17 +50,32 @@ ChatroomController = ($scope, Chatroom, $state, Socket) ->
 		return if not $scope.validateNewUsername
 
 		console.log "Setting username to #{$scope.user.tempName}"
-		$scope.user.name = "#{$scope.user.tempName}"
-		$scope.toggleUsernameChanging()
 
+		# Join chatroom if we have just finished picking out first name
+		unless $scope.user.name
+			Socket.emit "join chatroom", {
+				who:  $scope.user.tempName
+				chatroom: $scope.chatroom.name
+			}
+
+		$scope.user.name = $scope.user.tempName
+		$scope.toggleUsernameChanging()
 
 
 	console.log "getting chatroom: #{chatroom = $state.params.chatroom}"
 	Chatroom.get {chatroom: chatroom}, (data) ->
 			$scope.chatroom =  data
-			$scope.chatroom.users = ["herp", "derp", "yomama"]
-			Socket.emit "join chatroom", $scope.chatroom.name
 			console.log "got chatroom #{chatroom}!"
+
+			# Get a user and join
+			unless $scope.user.name
+				# Mark that we are changing the username
+				$scope.user.changing = true
+			else
+				Socket.emit "join chatroom", {
+						who:  $scope.user.name
+						chatroom: $scope.chatroom.name
+					}
 		,(httpResponse)->
 			console.error "Couldn't retrieve: #{chatroom}"
 
@@ -69,6 +86,12 @@ ChatroomController = ($scope, Chatroom, $state, Socket) ->
 		delete message.for
 		console.log message
 		$scope.chatroom.messages.push message
+
+	# Handle new users in the chatroom
+	Socket.on "chatroom users", (users)->
+		console.log "Seting userlist"
+		console.log users
+		$scope.chatroom.users = users
 
 	$scope.sendMessage = ->
 		console.log Socket.emit
