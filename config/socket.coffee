@@ -52,3 +52,16 @@ module.exports = (app, io) ->
 			app.get("chatrooms")[message.chatroom].messages.push dbMessage
 
 			io.to(message.chatroom).emit "chat message", dbMessage
+
+		socket.on "disconnect", ->
+
+			# They are dead to us!
+			# TODO get username from cookie
+			# user = socket.cookie.name
+
+			# TODO Notify users in different chatrooms
+			# for chatroom in users[user]
+			# 	io.to(chatroom).emit "user disconnect", user
+
+			# TODO Remove user from users
+			# delete users[user]

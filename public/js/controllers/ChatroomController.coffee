@@ -93,6 +93,10 @@ ChatroomController = ($scope, Chatroom, $state, Socket) ->
 		console.log users
 		$scope.chatroom.users = users
 
+	Socket.on "user disconnect", (user)->
+		i = $scope.chatroom.users.indexOf user
+		$scope.chatroom.users.splice i, 1
+
 	$scope.sendMessage = ->
 		console.log Socket.emit
 		Socket.emit "chat message",
