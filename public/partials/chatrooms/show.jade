@@ -1,15 +1,71 @@
-h1 {{chatroom.name}}
+.container-fluid
+	.page-header
+		h1
+			a(ui-sref="chatrooms.index") Chatrooms
+			span  / {{chatroom.name}}
 
-#discussion
-	table
-		tr(ng-repeat="message in chatroom.messages")
-			td {{message.datetime}}
-			td {{message.sender}}
-			td
-				p(ng-bind-html="message.content")
+	#discussion.row
+		.col-sm-9
+			table.table
+				tr(ng-repeat="message in chatroom.messages")
+					td {{message.datetime}}
+					td {{message.sender}}
+					td
+						p(ng-bind-html="message.content")
+		.col-sm-3
+			table.table
+				tr
+					th Users
+				tr(ng-repeat="user in chatroom.users")
+					td {{user}}
 
-form(action="")
-	input(autocomplete="off" ng-model="message" placeholder="Type a message here")
-	button(ng-click="sendMessage()") Send
+	form#username-form(role="form"
+				ng-if="user.changing"
+				ng-submit="changeUsername()"
+				ng-class="user.validation"
+				)
+		.input-group
 
-input(type="text" ng-model="username" placeholder="Enter your username here")
+			input#username-input.form-control(
+				autocomplete="off"
+				type="text"
+				ng-model="user.tempName"
+				ng-change="validateNewUsername()"
+				placeholder="Type unique username here."
+			)
+
+			span.input-group-btn
+				//- Attempts to change the username
+				button#change-username(
+					type="submit"
+					class="btn btn-primary"
+				) Change username
+
+	form#message-form(role="form"
+				ng-if="!user.changing"
+				ng-submit="sendMessage()"
+				)
+
+		.input-group
+			span.input-group-btn
+				//- Button to show username and initiate a change
+				button#username(
+					type="button"
+					class="btn btn-default"
+					ng-click="toggleUsernameChanging()"
+				) {{user.name}}:
+
+			input#message-input.form-control(
+				autocomplete="off"
+				type="text"
+				ng-model="user.message"
+				placeholder="Type a message here"
+				ng-if="!user.changing"
+			)
+
+			span.input-group-btn
+				button#send-message(
+					type="submit"
+					class="btn btn-primary"
+					ng-if="!user.changing"
+				) Send
