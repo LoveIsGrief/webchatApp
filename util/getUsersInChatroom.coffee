@@ -7,4 +7,4 @@ module.exports = (app)->
 		users = app.get("users")
 		ret = Object.keys users
 		ret.filter (user)->
-			users[user].indexOf(chatroom) > -1
+			users[user].chatrooms.indexOf(chatroom) > -1

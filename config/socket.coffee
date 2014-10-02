@@ -2,7 +2,7 @@ module.exports = (app, io) ->
 
 	cookie = require "cookie"
 	app.set "users", users = {
-		# user: [chatrooms]
+		# user: {chatrooms: []}
 		# TODO: track which other sockets are being used by the user
 	}
 
@@ -10,7 +10,6 @@ module.exports = (app, io) ->
 
 	io.on "connection", (socket) ->
 		console.log "a user(#{socket.id}) connected"
-		console.log socket.client
 
 
 		# TODO handle username change
@@ -28,10 +27,9 @@ module.exports = (app, io) ->
 			# TODO Set username in cookie
 
 			# Register user and their chatroom
-			chatrooms = unless users[user]
-					users[user] = []
-				else
-					users[user]
+			unless users[user]
+					users[user] = { chatrooms: []}
+			chatrooms = users[user].chatrooms
 			chatrooms.push chatroom
 
 			io.to(chatroom).emit "chatroom users",
