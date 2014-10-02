@@ -33,6 +33,16 @@ ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 		message: ""
 	}
 
+	sendJoinChatroom = (name)->
+		Socket.emit "join chatroom", {
+				who:  name
+				chatroom: $scope.chatroom.name
+			}
+
+	isUserInChatroom = (user)->
+		searched = user || $scope.user.name
+		$scope.chatroom.users.indexOf(searched) > -1
+
 	$scope.toggleUsernameChanging = ->
 		console.log "Toggle user.changing"
 		$scope.user.tempName = $scope.user.name
@@ -51,12 +61,15 @@ ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 
 		console.log "Setting username to #{$scope.user.tempName}"
 
-		# Join chatroom if we have just finished picking out first name
-		unless $scope.user.name
-			Socket.emit "join chatroom", {
-				who:  $scope.user.tempName
-				chatroom: $scope.chatroom.name
-			}
+		# Notify of new name
+		Socket.emit "change name", {
+			oldName: $scope.user.name
+			newName: $scope.user.tempName
+		}
+
+		# Join chatroom if user isn't in it
+		unless isUserInChatroom()
+			sendJoinChatroom $scope.user.tempName
 
 		$cookies.username = $scope.user.name = $scope.user.tempName
 		$scope.toggleUsernameChanging()
@@ -68,14 +81,12 @@ ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 			console.log "got chatroom #{chatroom}!"
 
 			# Get a user and join
-			unless $scope.user.name
+			if $scope.user.name
+				sendJoinChatroom $scope.user.name
+			else
 				# Mark that we are changing the username
 				$scope.user.changing = true
-			else
-				Socket.emit "join chatroom", {
-						who:  $scope.user.name
-						chatroom: $scope.chatroom.name
-					}
+
 		,(httpResponse)->
 			console.error "Couldn't retrieve: #{chatroom}"
 
@@ -105,6 +116,10 @@ ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 			message: $scope.user.message
 		$scope.user.message = ""
 
+	Socket.on "change name", (event)->
+		if isUserInChatroom(event.oldName)
+			i = $scope.chatroom.users.indexOf event.oldName
+			$scope.chatroom.users.splice i, 1, event.newName
 
 
 chatroomControllers.controller( "ChatroomController", ChatroomController,

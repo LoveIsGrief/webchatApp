@@ -11,27 +11,43 @@ module.exports = (app, io) ->
 	io.on "connection", (socket) ->
 		console.log "a user(#{socket.id}) connected"
 
+		###
+		User changed name -->
+			Rename or add user in app-store
+			Broadcast change to others
+		@param event [Object] { oldName: [String], newName: [String]}
+		###
+		socket.on "change name", (event)->
 
-		# TODO handle username change
-		# Broadcast it to others!
+			console.log "changing name: #{JSON.stringify event}"
 
-		# Handle newcomers to chatroom
-		# Register them app-globally and broadcast their presence
+			# Rename user in app-store
+			theUser = users[event.oldName] || { chatrooms: []}
+			delete users[event.old] if theUser
+			users[event.newName] = theUser
+
+			# Broadcast it to others!
+			for chatroom in theUser.chatrooms
+				io.to(chatroom).emit "change name", event
+
+
+		###
+		Handle newcomers to chatroom
+		Register them app-globally and broadcast their presence
+		@param event [Object] { who: [String], chatroom: [String]}
+		###
 		socket.on "join chatroom", (event)->
+			# Checks on the user
 			user = event.who
 			return unless user
+			unless users[user]
+				users[user] = { chatrooms: []}
+
 			chatroom = event.chatroom
 			console.log "#{user} joining chatroom: #{chatroom}"
 			socket.join chatroom
 
-			# TODO Set username in cookie
-
-			# Register user and their chatroom
-			unless users[user]
-					users[user] = { chatrooms: []}
-			chatrooms = users[user].chatrooms
-			chatrooms.push chatroom
-
+			users[user].chatrooms.push chatroom
 			io.to(chatroom).emit "chatroom users",
 					getUsersInChatroom(chatroom)
 
