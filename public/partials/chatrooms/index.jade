@@ -3,8 +3,7 @@ header
 div(class="container-fluid panel panel-default tall scroller")
 	ul(class="list-group")
 		a(ng-repeat="chatroom in chatrooms| filter:chatroomFilter")
-			li(ui-sref="chatrooms.show({ chatroom: chatroom})" class="list-group-item")
-				{{chatroom}}
+			li(ui-sref="chatrooms.show({ chatroom: chatroom})" class="list-group-item") {{chatroom}}
 				span(class="badge") {{chatroom}}.userCount
 				span(class="badge") {{chatroom}}.messageCount
 
