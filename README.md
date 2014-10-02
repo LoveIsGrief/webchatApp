@@ -1,14 +1,13 @@
 # Webchat application
 
-
-# Description
-
 This is a simple application that should allow users to connect to chatrooms
 and start chatting.
 Once a chatroom has no members anymore (abandoned),
 then its history will be abandoned as well.
 
 # How to use
+
+What's below is from a dev point of view. Once the server is up and running it should be pretty straight forward to use. At least I hope so...
 
 ## Prerequisites
 
