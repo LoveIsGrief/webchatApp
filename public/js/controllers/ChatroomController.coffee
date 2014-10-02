@@ -1,4 +1,4 @@
-chatroomControllers = angular.module "chatroomControllers", []
+chatroomControllers = angular.module "chatroomControllers", [ "ngCookies"]
 
 # Used to control a list of chatrooms
 ChatroomListController = ($scope, Chatroom) ->
@@ -19,14 +19,14 @@ chatroomControllers.controller( "ChatroomListController", ChatroomListController
 
 
 # Used to control 1 chatroom
-ChatroomController = ($scope, Chatroom, $state, Socket) ->
+ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 
 	console.log "Created ChatroomController"
 	$scope.chatroom = { name: "", messages: []}
 
 	# Need an object to pass through ng-if and similar scopes
 	$scope.user = {
-		name: null
+		name: $cookies.username
 		tempName: "" # Temp store while changing the name
 		changing: false # Indicates if we're changing the name
 		validation: "" # Used by ng-class when creating a username
@@ -58,7 +58,7 @@ ChatroomController = ($scope, Chatroom, $state, Socket) ->
 				chatroom: $scope.chatroom.name
 			}
 
-		$scope.user.name = $scope.user.tempName
+		$cookies.username = $scope.user.name = $scope.user.tempName
 		$scope.toggleUsernameChanging()
 
 
@@ -108,4 +108,4 @@ ChatroomController = ($scope, Chatroom, $state, Socket) ->
 
 
 chatroomControllers.controller( "ChatroomController", ChatroomController,
-	["Chatroom", "$state", "Socket"])
+	["Chatroom", "$state", "Socket", "$cookies"])
