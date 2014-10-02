@@ -1,17 +1,14 @@
 module.exports = (app, io) ->
 
-	# TODO make this an app global attribute (app.set "users" users)
-	users = {
+	app.set "users", users = {
 		# user: [chatrooms]
 	}
+
+	getUsersInChatroom = require("../util/getUsersInChatroom")(app)
 
 	io.on "connection", (socket) ->
 		console.log "a user(#{socket.id}) connected"
 
-		getUsersInChatroom = (chatroom)->
-			ret = Object.keys users
-			ret.filter (user)->
-				users[user].indexOf(chatroom) > -1
 
 		socket.on "disconnect", ->
 			console.log "user disconnected"
