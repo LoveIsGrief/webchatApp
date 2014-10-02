@@ -1,4 +1,5 @@
 require("coffee-script/register");
+require("sugar")
 
 var express = require("express"),
   fs = require("fs"),
