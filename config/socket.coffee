@@ -24,8 +24,16 @@ module.exports = (app, io) ->
 			debug "changing name: #{JSON.stringify event}"
 
 			# Rename user in app-store
-			theUser = users[event.oldName] || { chatrooms: []}
-			delete users[event.old] if theUser
+			theUser = users[event.oldName]
+			debug "old user: #{JSON.stringify theUser}"
+
+
+			if theUser
+				debug "deleting old user: #{JSON.stringify theUser}"
+				delete users[event.oldName]
+			else
+				# User doesn't exist, create new one
+				theUser =  { chatrooms: []}
 			users[event.newName] = theUser
 
 			debug "change name: done"
@@ -33,6 +41,9 @@ module.exports = (app, io) ->
 			# Broadcast it to others!
 			for chatroom in theUser.chatrooms
 				io.to(chatroom).emit "change name", event
+
+			# Notify ourself as well
+			socket.emit "change name", event
 
 
 		###
