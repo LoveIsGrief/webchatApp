@@ -72,7 +72,10 @@ module.exports = (app, io) ->
 
 			# They are dead to us!
 			# TODO get username from cookie
-			user = socket.request.headers.cookie.username || "Unnamed user"
+			user = if cookie = socket.request.headers.cookie
+					cookie.username || "Unnamed user"
+				else
+					"Unnamed user"
 			console.log "#{user} disconnected"
 
 			# for chatroom in users[user]
