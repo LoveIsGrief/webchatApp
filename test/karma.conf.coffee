@@ -11,7 +11,7 @@ module.exports = (config)->
 			"public/components/angular-sanitize/angular-sanitize.js",
 			"public/components/angular-mocks/angular-mocks.js",
 			"public/js/**/*.coffee",
-			"test/unit/**/*.coffee"
+			"test/unit/frontend/**/*.coffee"
 		]
 
 		autoWatch : true
