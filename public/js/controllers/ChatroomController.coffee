@@ -21,6 +21,10 @@ chatroomControllers.controller( "ChatroomListController", ChatroomListController
 # Used to control 1 chatroom
 ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 
+	#
+	# Scope vars
+	#
+
 	console.log "Created ChatroomController"
 	$scope.chatroom = { name: "", messages: []}
 
@@ -33,6 +37,10 @@ ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 		message: ""
 	}
 
+	#
+	# utility methods
+	#
+
 	sendJoinChatroom = (name)->
 		Socket.emit "join chatroom", {
 				who:  name
@@ -42,6 +50,10 @@ ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 	isUserInChatroom = (user)->
 		searched = user || $scope.user.name
 		$scope.chatroom.users.indexOf(searched) > -1
+
+	#
+	# scope methods
+	#
 
 	$scope.toggleUsernameChanging = ->
 		console.log "Toggle user.changing"
@@ -74,21 +86,18 @@ ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 		$cookies.username = $scope.user.name = $scope.user.tempName
 		$scope.toggleUsernameChanging()
 
+	$scope.sendMessage = ->
+		console.log Socket.emit
+		Socket.emit "chat message",
+			chatroom: $scope.chatroom.name
+			sender: $scope.user.name
+			message: $scope.user.message
+		$scope.user.message = ""
 
-	console.log "getting chatroom: #{chatroom = $state.params.chatroom}"
-	Chatroom.get {chatroom: chatroom}, (data) ->
-			$scope.chatroom =  data
-			console.log "got chatroom #{chatroom}!"
 
-			# Get a user and join
-			if $scope.user.name
-				sendJoinChatroom $scope.user.name
-			else
-				# Mark that we are changing the username
-				$scope.user.changing = true
-
-		,(httpResponse)->
-			console.error "Couldn't retrieve: #{chatroom}"
+	#
+	# Socket handlers
+	#
 
 
 	# Handle incoming messages
@@ -108,18 +117,31 @@ ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 		i = $scope.chatroom.users.indexOf user
 		$scope.chatroom.users.splice i, 1
 
-	$scope.sendMessage = ->
-		console.log Socket.emit
-		Socket.emit "chat message",
-			chatroom: $scope.chatroom.name
-			sender: $scope.user.name
-			message: $scope.user.message
-		$scope.user.message = ""
-
 	Socket.on "change name", (event)->
 		if isUserInChatroom(event.oldName)
 			i = $scope.chatroom.users.indexOf event.oldName
 			$scope.chatroom.users.splice i, 1, event.newName
+
+
+
+	#
+	# Necessary methods to get things running
+	#
+
+	console.log "getting chatroom: #{chatroom = $state.params.chatroom}"
+	Chatroom.get {chatroom: chatroom}, (data) ->
+			$scope.chatroom =  data
+			console.log "got chatroom #{chatroom}!"
+
+			# Get a user and join
+			if $scope.user.name
+				sendJoinChatroom $scope.user.name
+			else
+				# Mark that we are changing the username
+				$scope.user.changing = true
+
+		,(httpResponse)->
+			console.error "Couldn't retrieve: #{chatroom}"
 
 
 chatroomControllers.controller( "ChatroomController", ChatroomController,
