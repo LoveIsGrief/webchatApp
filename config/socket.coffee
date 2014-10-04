@@ -1,3 +1,5 @@
+debug = require("debug")("webChatApp:socket")
+
 module.exports = (app, io) ->
 
 	cookie = require "cookie"
@@ -9,7 +11,7 @@ module.exports = (app, io) ->
 	getUsersInChatroom = require("../util/getUsersInChatroom")(app)
 
 	io.on "connection", (socket) ->
-		console.log "a user(#{socket.id}) connected"
+		debug "a user(#{socket.id}) connected"
 
 		###
 		User changed name -->
@@ -19,12 +21,14 @@ module.exports = (app, io) ->
 		###
 		socket.on "change name", (event)->
 
-			console.log "changing name: #{JSON.stringify event}"
+			debug "changing name: #{JSON.stringify event}"
 
 			# Rename user in app-store
 			theUser = users[event.oldName] || { chatrooms: []}
 			delete users[event.old] if theUser
 			users[event.newName] = theUser
+
+			debug "change name: done"
 
 			# Broadcast it to others!
 			for chatroom in theUser.chatrooms
@@ -44,7 +48,7 @@ module.exports = (app, io) ->
 				users[user] = { chatrooms: []}
 
 			chatroom = event.chatroom
-			console.log "#{user} joining chatroom: #{chatroom}"
+			debug "#{user} joining chatroom: #{chatroom}"
 			socket.join chatroom
 
 			users[user].chatrooms.push chatroom
@@ -54,8 +58,8 @@ module.exports = (app, io) ->
 		# Handle incoming chat messages
 		# Save them and broadcast them to chatroom members
 		socket.on "chat message", (message)->
-			console.log "#{message.sender}: #{message.message}"
-			console.log socket.request.headers.cookie
+			debug "#{message.sender}: #{message.message}"
+			debug socket.request.headers.cookie
 
 			dbMessage = {
 				for: message.chatroom
@@ -76,7 +80,7 @@ module.exports = (app, io) ->
 					cookie.username || "Unnamed user"
 				else
 					"Unnamed user"
-			console.log "#{user} disconnected"
+			debug "#{user} disconnected"
 
 			# for chatroom in users[user]
 				# TODO If no other sockets owned by this user are in the same chatroom
