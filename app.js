@@ -1,19 +1,11 @@
 require("coffee-script/register");
 require("sugar")
 
-var express = require("express"),
-  fs = require("fs"),
-  config = require("./config/config");
-
-var app = express();
-
-require("./config/express")(app, config);
-
-var http = require("http").Server(app);
-var io = require("socket.io")(http)
-
-// configure socket.io
-require("./config/socket")(app, io);
+var fs = require("fs"),
+	server = require("./config/server"),
+	http = server.http,
+	app = server.app
+	config = server.config;
 
 http.listen(config.port, function () {
 	console.log("Listening on port:" + config.port)
