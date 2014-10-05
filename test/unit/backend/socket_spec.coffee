@@ -86,6 +86,40 @@ describe 'a socket.io user', ->
 
 			@socket.emit "join chatroom", { who: @username, chatroom: chatroom }
 
+	describe "in an established session in offtopic chatroom" , ->
+
+		beforeEach (done)->
+
+			# Reset users
+			app.set "users", {}
+			@users = app.get "users"
+
+			# Add a user to the app
+			@username = "herp"
+			@chatroom = "offtopic"
+			@users[@username] = new User(@username, [])
+
+			@socket.on "chatroom users", (users)=>
+				done()
+
+			@socket.emit "join chatroom", { who: @username, chatroom: @chatroom }
+
+		it "should send a chat message", (done)->
+			message = {
+				sender: @username
+				content: "Herp to derp!"
+				chatroom: @chatroom
+			}
+
+			@socket.on "chat message", (broadcastMessage)->
+				expect(broadcastMessage.sender).toEqual message.sender
+				expect(broadcastMessage.for).toEqual message.chatroom
+				expect(broadcastMessage.content).toEqual message.content
+
+				done()
+
+			@socket.emit "chat message", message
+
 	describe "exiting" , ->
 
 		it "should disconnect", (done)->

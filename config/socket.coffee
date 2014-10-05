@@ -66,19 +66,21 @@ module.exports = (app, io) ->
 		# Handle incoming chat messages
 		# Save them and broadcast them to chatroom members
 		socket.on "chat message", (message)->
-			debug "#{message.sender}: #{message.message}"
-			debug socket.request.headers.cookie
+			debug "message from #{message.sender}: #{message.content}"
 
 			dbMessage = {
-				for: message.chatroom
 				datetime: (new Date()).toJSON()
 				sender: message.sender
-				content: message.message
+				content: message.content
 			}
 
 			app.get("chatrooms")[message.chatroom].messages.push dbMessage
 
-			io.to(message.chatroom).emit "chat message", dbMessage
+			# We don't want to change the db
+			toSend = Object.clone dbMessage
+			toSend.for = message.chatroom
+			debug "broadcasting message #{JSON.stringify toSend}"
+			io.to(message.chatroom).emit "chat message", toSend
 
 		socket.on "disconnect", ->
 
