@@ -3,6 +3,11 @@ root = "../../../"
 process.env.NODE_ENV = "test"
 
 debug = require("debug")("test")
+
+# Models
+User = require "#{root}app/models/User"
+
+# Server stuff
 server = require "#{root}config/server"
 config = server.config
 http = server.http
@@ -43,34 +48,41 @@ describe 'a socket.io user', ->
 
 	describe "in an established session" , ->
 
+		beforeEach ->
+
+			@users = app.get "users"
+
+			# Add a user to the app
+			@username = "herp"
+			@users[@username] = new User(@username)
+
+
 		it "should change their name again", (done)->
-			@socket.once "change name", (event)=>
-				expect(event.newName).toEqual "herp"
-				# New user should be in backend
-				oldUser = app.get("users")["herp"]
-				expect(oldUser).toBeTruthy()
 
-				# Change name a second time
-				@socket.once "change name", (event)->
-					debug app.get("users")
-					# Old user name should be deleted from backend
-					expect(app.get("users")["herp"]).toBeFalsy()
-					# New user name should be in backend
-					renamedUser = app.get("users")["derp"]
-					expect(renamedUser).toBeTruthy()
-					expect(renamedUser).toEqual oldUser
-					done()
+			oldName = @username
+			newName = "derp"
+			oldUser = @users[@username]
 
-				# Initiate second name change
-				@socket.emit "change name", { oldName: "herp", newName: "derp"}
+			# Change name a second time
+			@socket.once "change name", (event)->
 
-			# Initiate first name change
-			@socket.emit "change name", { oldName: null, newName: "herp"}
+				# Old user name should be deleted from backend
+				expect(app.get("users")[oldName]).toBeUndefined()
+
+				# New user name should be in backend
+				renamedUser = app.get("users")[newName]
+				expect(renamedUser).toBeDefined()
+				expect(renamedUser).toEqual oldUser
+				done()
+
+			# Initiate second name change
+			@socket.emit "change name", { oldName: oldName, newName: newName}
+
 
 	describe "exiting" , ->
 
 		it "should disconnect", (done)->
-			@socket.on "disconnect", ->
+			@socket.once "disconnect", ->
 				done()
 			@socket.on "connect", =>
 				debug "connected to disconnect"
