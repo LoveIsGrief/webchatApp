@@ -1,4 +1,5 @@
 debug = require("debug")("webChatApp:socket")
+User = require '../app/models/User'
 
 module.exports = (app, io) ->
 
@@ -33,7 +34,7 @@ module.exports = (app, io) ->
 				delete users[event.oldName]
 			else
 				# User doesn't exist, create new one
-				theUser =  { chatrooms: []}
+				theUser =  new User()
 			users[event.newName] = theUser
 
 			debug "change name: done"
@@ -56,7 +57,7 @@ module.exports = (app, io) ->
 			user = event.who
 			return unless user
 			unless users[user]
-				users[user] = { chatrooms: []}
+				users[user] = new User()
 
 			chatroom = event.chatroom
 			debug "#{user} joining chatroom: #{chatroom}"
