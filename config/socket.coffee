@@ -1,15 +1,13 @@
+debug = require("debug")("webChatApp:socket")
+User = require '../app/models/User'
+
 module.exports = (app, io) ->
 
 	cookie = require "cookie"
-	app.set "users", users = {
-		# user: {chatrooms: []}
-		# TODO: track which other sockets are being used by the user
-	}
-
 	getUsersInChatroom = require("../util/getUsersInChatroom")(app)
 
 	io.on "connection", (socket) ->
-		console.log "a user(#{socket.id}) connected"
+		debug "a user(#{socket.id}) connected"
 
 		###
 		User changed name -->
@@ -18,17 +16,30 @@ module.exports = (app, io) ->
 		@param event [Object] { oldName: [String], newName: [String]}
 		###
 		socket.on "change name", (event)->
-
-			console.log "changing name: #{JSON.stringify event}"
+			users = app.get "users"
+			debug "changing name: #{JSON.stringify event}"
 
 			# Rename user in app-store
-			theUser = users[event.oldName] || { chatrooms: []}
-			delete users[event.old] if theUser
+			theUser = users[event.oldName]
+			debug "old user: #{JSON.stringify theUser}"
+
+
+			if theUser
+				debug "deleting old user: #{JSON.stringify theUser}"
+				delete users[event.oldName]
+			else
+				# User doesn't exist, create new one
+				theUser =  new User()
 			users[event.newName] = theUser
+
+			debug "change name: done"
 
 			# Broadcast it to others!
 			for chatroom in theUser.chatrooms
 				io.to(chatroom).emit "change name", event
+
+			# Notify ourself as well
+			socket.emit "change name", event
 
 
 		###
@@ -37,14 +48,15 @@ module.exports = (app, io) ->
 		@param event [Object] { who: [String], chatroom: [String]}
 		###
 		socket.on "join chatroom", (event)->
+			users = app.get "users"
 			# Checks on the user
 			user = event.who
 			return unless user
 			unless users[user]
-				users[user] = { chatrooms: []}
+				users[user] = new User()
 
 			chatroom = event.chatroom
-			console.log "#{user} joining chatroom: #{chatroom}"
+			debug "#{user} joining chatroom: #{chatroom}"
 			socket.join chatroom
 
 			users[user].chatrooms.push chatroom
@@ -54,26 +66,31 @@ module.exports = (app, io) ->
 		# Handle incoming chat messages
 		# Save them and broadcast them to chatroom members
 		socket.on "chat message", (message)->
-			console.log "#{message.sender}: #{message.message}"
-			console.log socket.request.headers.cookie
+			debug "message from #{message.sender}: #{message.content}"
 
 			dbMessage = {
-				for: message.chatroom
 				datetime: (new Date()).toJSON()
 				sender: message.sender
-				content: message.message
+				content: message.content
 			}
 
 			app.get("chatrooms")[message.chatroom].messages.push dbMessage
 
-			io.to(message.chatroom).emit "chat message", dbMessage
+			# We don't want to change the db
+			toSend = Object.clone dbMessage
+			toSend.for = message.chatroom
+			debug "broadcasting message #{JSON.stringify toSend}"
+			io.to(message.chatroom).emit "chat message", toSend
 
 		socket.on "disconnect", ->
 
 			# They are dead to us!
 			# TODO get username from cookie
-			user = socket.request.headers.cookie.username || "Unnamed user"
-			console.log "#{user} disconnected"
+			user = if cookie = socket.request.headers.cookie
+					cookie.username || "Unnamed user"
+				else
+					"Unnamed user"
+			debug "#{user} disconnected"
 
 			# for chatroom in users[user]
 				# TODO If no other sockets owned by this user are in the same chatroom

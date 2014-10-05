@@ -30,6 +30,10 @@ module.exports = (app, config) ->
   # File db
   app.set "chatrooms", require(config.db)
 
+  # Other necessary vars
+  app.set "users", {} # users currently using the server
+  console.log app.get "users"
+
   # catch 404 and forward to error handler
   app.use (req, res, next) ->
     err = new Error "Not Found"
