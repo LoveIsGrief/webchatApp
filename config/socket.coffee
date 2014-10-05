@@ -4,11 +4,6 @@ User = require '../app/models/User'
 module.exports = (app, io) ->
 
 	cookie = require "cookie"
-	app.set "users", users = {
-		# user: {chatrooms: []}
-		# TODO: track which other sockets are being used by the user
-	}
-
 	getUsersInChatroom = require("../util/getUsersInChatroom")(app)
 
 	io.on "connection", (socket) ->
@@ -21,7 +16,7 @@ module.exports = (app, io) ->
 		@param event [Object] { oldName: [String], newName: [String]}
 		###
 		socket.on "change name", (event)->
-
+			users = app.get "users"
 			debug "changing name: #{JSON.stringify event}"
 
 			# Rename user in app-store
@@ -53,6 +48,7 @@ module.exports = (app, io) ->
 		@param event [Object] { who: [String], chatroom: [String]}
 		###
 		socket.on "join chatroom", (event)->
+			users = app.get "users"
 			# Checks on the user
 			user = event.who
 			return unless user
