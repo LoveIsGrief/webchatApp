@@ -35,11 +35,14 @@ module.exports = (app, io) ->
 			debug "change name: done"
 
 			# Broadcast it to others!
-			for chatroom in theUser.chatrooms
+			for chatroom, socketO in theUser.chatrooms
 				io.to(chatroom).emit "change name", event
 
 			# Notify ourself as well
 			socket.emit "change name", event
+
+			# Set name in socket
+			socket["_username"] = event.newName
 
 
 		###
@@ -53,13 +56,19 @@ module.exports = (app, io) ->
 			user = event.who
 			return unless user
 			unless users[user]
-				users[user] = new User()
+				users[user] = new User(user)
+				debug "had to create new user"
+				socket["_username"] = user
 
 			chatroom = event.chatroom
 			debug "#{user} joining chatroom: #{chatroom}"
 			socket.join chatroom
 
-			users[user].chatrooms.push chatroom
+			# Create chatroom-object and socket if need be
+			chatroomO = users[user].chatrooms[chatroom] || {}
+			chatroomO[socket.id] = 1
+			users[user].chatrooms[chatroom] = chatroomO
+
 			io.to(chatroom).emit "chatroom users",
 					getUsersInChatroom(chatroom)
 

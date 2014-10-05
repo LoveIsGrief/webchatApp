@@ -83,7 +83,7 @@ describe 'a socket.io user', ->
 			chatroom = "offtopic"
 			@socket.on "chatroom users", (users)=>
 				expect(users).toContain @username
-				expect(@users[@username].chatrooms).toContain chatroom
+				expect(@users[@username].chatrooms[chatroom]).toBeDefined()
 				done()
 
 			@socket.emit "join chatroom", { who: @username, chatroom: chatroom }
