@@ -45,16 +45,16 @@ describe 'a socket.io user', ->
 				done()
 			@socket.emit "change name", { oldName: null, newName: "herp"}
 
-	describe "in an established session" , ->
+	describe "after initializing and picking a name" , ->
 
 		beforeEach ->
 
+			app.set "users", {}
 			@users = app.get "users"
 
 			# Add a user to the app
 			@username = "herp"
 			@users[@username] = new User(@username)
-
 
 		it "should change their name again", (done)->
 
@@ -77,10 +77,10 @@ describe 'a socket.io user', ->
 			# Initiate second name change
 			@socket.emit "change name", { oldName: oldName, newName: newName}
 
-		it "should join a chatroom" , ->
+		it "should join a chatroom" , (done) ->
 			chatroom = "offtopic"
 			@socket.on "chatroom users", (users)=>
-				expect(Object.keys(users)).toContain @username
+				expect(users).toContain @username
 				expect(@users[@username].chatrooms).toContain chatroom
 				done()
 
