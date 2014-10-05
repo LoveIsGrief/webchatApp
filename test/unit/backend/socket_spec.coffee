@@ -38,6 +38,7 @@ describe 'a socket.io user', ->
 				done()
 
 		it "should create user on first name change", (done)->
+			debug "should create user on first name change"
 			@socket.on "change name", (event)->
 				expect(event.newName).toEqual "herp"
 				# New user should be in backend
@@ -47,20 +48,21 @@ describe 'a socket.io user', ->
 
 	describe "after initializing and picking a name" , ->
 
-		beforeEach ->
+		beforeEach (done)->
 
-			app.set "users", {}
 			@users = app.get "users"
 
 			# Add a user to the app
 			@username = "herp"
-			@users[@username] = new User(@username)
+			@socket.once "change name", (event)->
+				done()
+			@socket.emit "change name", { oldName: null, newName: @username}
 
 		it "should change their name again", (done)->
 
 			oldName = @username
 			newName = "derp"
-			oldUser = @users[@username]
+			oldUser = @users[oldName]
 
 			# Change name a second time
 			@socket.once "change name", (event)->
@@ -71,13 +73,13 @@ describe 'a socket.io user', ->
 				# New user name should be in backend
 				renamedUser = app.get("users")[newName]
 				expect(renamedUser).toBeDefined()
-				expect(renamedUser).toEqual oldUser
 				done()
 
 			# Initiate second name change
 			@socket.emit "change name", { oldName: oldName, newName: newName}
 
 		it "should join a chatroom" , (done) ->
+			debug "should join a chatroom"
 			chatroom = "offtopic"
 			@socket.on "chatroom users", (users)=>
 				expect(users).toContain @username
@@ -91,15 +93,14 @@ describe 'a socket.io user', ->
 		beforeEach (done)->
 
 			# Reset users
-			app.set "users", {}
 			@users = app.get "users"
 
 			# Add a user to the app
 			@username = "herp"
 			@chatroom = "offtopic"
-			@users[@username] = new User(@username, [])
 
 			@socket.on "chatroom users", (users)=>
+				debug "beforeEach joined chatroom"
 				done()
 
 			@socket.emit "join chatroom", { who: @username, chatroom: @chatroom }
@@ -124,6 +125,7 @@ describe 'a socket.io user', ->
 
 		it "should disconnect", (done)->
 			@socket.once "disconnect", ->
+				debug "socket disconnected"
 				done()
 			@socket.on "connect", =>
 				debug "connected to disconnect"
@@ -132,7 +134,9 @@ describe 'a socket.io user', ->
 
 
 	# Tear down socket.io client
-	afterEach ->
+	afterEach (done)->
 		debug "before disconnect after end"
+		@socket.once "disconnect", ->
+			debug "disconnected after end"
+			done()
 		@socket.disconnect()
-		debug "disconnected after end"
