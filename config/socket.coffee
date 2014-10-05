@@ -29,7 +29,8 @@ module.exports = (app, io) ->
 				delete users[event.oldName]
 			else
 				# User doesn't exist, create new one
-				theUser =  new User()
+				theUser =  new User(event.newName)
+
 			users[event.newName] = theUser
 
 			debug "change name: done"
@@ -94,18 +95,42 @@ module.exports = (app, io) ->
 		socket.on "disconnect", ->
 
 			# They are dead to us!
-			# TODO get username from cookie
-			user = if cookie = socket.request.headers.cookie
-					cookie.username || "Unnamed user"
-				else
-					"Unnamed user"
+			# Get username with socket assoc
+			users = app.get("users")
+			user = socket["_username"]
+
+			debug "disconnecting #{user} with id: #{socket.id}"
+
+			if not user
+				user = "Unnamed user"
+			else
+				userO = users[user]
+				debug users
+
+				# If all this user's sockets have left a chatroom
+				# broadcast it to others
+				socketChatrooms = userO.chatroomsOfSocket socket
+				debug "Socket chatrooms: #{socketChatrooms}"
+				broadcastChatrooms = socketChatrooms.filter (room)->
+					chatroomO = userO.chatrooms[room]
+					delete chatroomO[socket.id]
+					Object.isEmpty chatroomO
+
+				debug "to broadcast disconnect to: #{broadcastChatrooms}"
+				# Get rid of chatrooms no sockets are in
+				for chatroom in broadcastChatrooms
+					delete userO.chatrooms[chatroom]
+
+
+				debug userO
+				# We are in no chatroom anymore which means suicide
+				if Object.isEmpty userO.chatrooms
+					delete users[user]
+					debug "deleted #{user}"
+					debug users
+
+				for chatroom in broadcastChatrooms
+					debug "broadcast #{user} disconnect to #{chatroom}"
+					io.to(chatroom).emit "user disconnect", user
+
 			debug "#{user} disconnected"
-
-			# for chatroom in users[user]
-				# TODO If no other sockets owned by this user are in the same chatroom
-				# TODO Leave it and notify others of departure
-				# TODO Notify users in different chatrooms
-				# io.to(chatroom).emit "user disconnect", user
-
-			# TODO If last socket: remove user from users
-			# delete users[user]
