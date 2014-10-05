@@ -1,3 +1,4 @@
+require "sugar"
 root = "../../../"
 
 process.env.NODE_ENV = "test"
@@ -17,7 +18,6 @@ app = server.app
 http.listen config.port, ->
 	debug "Http server listening"
 
-
 describe 'a socket.io user', ->
 
 	# Setup client-side socket.io
@@ -35,7 +35,6 @@ describe 'a socket.io user', ->
 		it 'should connect', (done)->
 			debug "should connect"
 			@socket.on "connect", ->
-				debug "yay"
 				done()
 
 		it "should create user on first name change", (done)->
@@ -78,6 +77,14 @@ describe 'a socket.io user', ->
 			# Initiate second name change
 			@socket.emit "change name", { oldName: oldName, newName: newName}
 
+		it "should join a chatroom" , ->
+			chatroom = "offtopic"
+			@socket.on "chatroom users", (users)=>
+				expect(Object.keys(users)).toContain @username
+				expect(@users[@username].chatrooms).toContain chatroom
+				done()
+
+			@socket.emit "join chatroom", { who: @username, chatroom: chatroom }
 
 	describe "exiting" , ->
 
