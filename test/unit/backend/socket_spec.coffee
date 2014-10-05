@@ -121,12 +121,50 @@ describe 'a socket.io user', ->
 
 			@socket.emit "chat message", message
 
+		it "should disconnect and exit chatroom" , (done)->
+
+			# No callback on server so we have to wait a wee little bit
+			setTimeout =>
+				debug "checking user existence"
+				debug Object.keys(app.get("users"))
+				debug @username
+				# expect(Object.keys(app.get("users"))).not.toContain @username
+				done() #TODO find out why this isn't being called...
+				debug "called done!"
+			, 50
+
+
+			debug "disconnecting and leaving chatroom"
+			@socket.disconnect()
+
+	describe "in an established session in offtopic chatroom with another user" , ->
+
+		beforeEach (done)->
+
+			# Reset users
+			# app.set "users", {}
+			@users = app.get "users"
+
+			# Add a user to the app
+			@username = "herp"
+			@chatroom = "offtopic"
+			@users[@username] = new User(@username, [])
+
+			@socketA.on "chatroom users", (users)=>
+				done()
+
+			@socketA.emit "join chatroom", { who: @username, chatroom: @chatroom }
+
+			# socket2 =
+
+		xit "should disconnect and broadcast to others" , ->
+
 	describe "exiting" , ->
 
 		it "should disconnect", (done)->
 			@socket.once "disconnect", ->
 				debug "socket disconnected"
-				done()
+				done() #TODO find out why this isn't being called...
 			@socket.on "connect", =>
 				debug "connected to disconnect"
 				@socket.disconnect()
