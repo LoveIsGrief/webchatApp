@@ -4,6 +4,7 @@ webChatApp = angular.module "webChatApp", [
 		"chatroomControllers"
 		"chatroomResources"
 		"socketServices"
+		"luegg.directives" # for scroll-glue (autoscrolling)
 	]
 
 webChatApp.config ($locationProvider) ->
