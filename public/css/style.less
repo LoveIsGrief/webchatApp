@@ -1,0 +1,14 @@
+@navbarHeight: 120px;
+
+body{
+	height: 100%;
+}
+
+/* Content will be scrollable, but the html shouldn't be*/
+#chatrooms{
+	position: absolute;
+	top: @navbarHeight;
+	bottom: 0px;
+	width: 100%;
+	overflow-y: auto;
+}

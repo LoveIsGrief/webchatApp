@@ -1,14 +1,5 @@
-header
+nav(class="navbar navbar-fixed-top navbar-default")
 	h1.text-center Chatrooms
-div(class="container-fluid panel panel-default tall scroller")
-	ul(class="list-group")
-		a(ng-repeat="chatroom in chatrooms| filter:chatroomFilter")
-			li(ui-sref="chatrooms.show({ chatroom: chatroom})"
-				class="list-group-item text-center") {{chatroom}}
-				//- span(class="badge") {{chatroom}}.userCount
-				//- span(class="badge") {{chatroom}}.messageCount
-
-footer
 	form
 		.form-group
 			input(
@@ -20,3 +11,11 @@ footer
 			)
 			//- span.input-group-btn
 			//- 	button(type="button" class="btn btn-primary") Create chatroom
+div#chatrooms(class="container-fluid panel panel-default")
+	ul.list-group
+		a(ng-repeat="chatroom in chatrooms| filter:chatroomFilter")
+			li(ui-sref="chatrooms.show({ chatroom: chatroom})"
+				class="list-group-item text-center") {{chatroom}}
+				//- span(class="badge") {{chatroom}}.userCount
+				//- span(class="badge") {{chatroom}}.messageCount
+
