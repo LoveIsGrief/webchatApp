@@ -1,27 +1,22 @@
 {
 	"offtopic": {
 		"name": "offtopic",
-		"messages": [
-		]
+		"messages": []
 	},
 	"development": {
 		"name": "development",
-		"messages": [
-		]
+		"messages": []
 	},
 	"politics": {
 		"name": "politics",
-		"messages": [
-		]
+		"messages": []
 	},
 	"dating": {
 		"name": "dating",
-		"messages": [
-		]
+		"messages": []
 	},
 	"general discussion": {
 		"name": "general discussion",
-		"messages": [
-		]
+		"messages": []
 	}
 }
