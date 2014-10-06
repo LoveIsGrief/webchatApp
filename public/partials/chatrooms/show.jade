@@ -1,23 +1,7 @@
-.container-fluid
-	.page-header
-		h1
-			a(ui-sref="chatrooms.index") Chatrooms
-			span  / {{chatroom.name}}
-
-	#discussion.row
-		.col-sm-9
-			table.table
-				tr(ng-repeat="message in chatroom.messages")
-					td {{message.datetime}}
-					td {{message.sender}}
-					td
-						p(ng-bind-html="message.message")
-		.col-sm-3
-			table.table
-				tr
-					th Users
-				tr(ng-repeat="user in chatroom.users")
-					td {{user}}
+nav(class="navbar navbar-fixed-top navbar-default")
+	h1.text-center
+		a(ui-sref="chatrooms.index") Chatrooms
+		span  / {{chatroom.name}}
 
 	form#username-form(role="form"
 				ng-if="user.changing"
@@ -45,7 +29,6 @@
 				ng-if="!user.changing"
 				ng-submit="sendMessage()"
 				)
-
 		.input-group
 			span.input-group-btn
 				//- Button to show username and initiate a change
@@ -71,3 +54,18 @@
 					class="btn btn-primary"
 					ng-if="!user.changing"
 				) Send
+
+#discussion-container(scroll-glue)
+	table.table
+		tr(ng-repeat="message in chatroom.messages")
+			td {{message.datetime}}
+			td {{message.sender}}
+			td
+				p(ng-bind-html="message.message")
+#user-container(scroll-glue)
+	table.table
+		tr
+			th Users
+		tr(ng-repeat="user in chatroom.users")
+			td {{user}}
+
