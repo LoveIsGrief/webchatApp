@@ -1,21 +1,22 @@
 header
-	h1 Chatrooms
+	h1.text-center Chatrooms
 div(class="container-fluid panel panel-default tall scroller")
 	ul(class="list-group")
 		a(ng-repeat="chatroom in chatrooms| filter:chatroomFilter")
-			li(ui-sref="chatrooms.show({ chatroom: chatroom})" class="list-group-item") {{chatroom}}
-				span(class="badge") {{chatroom}}.userCount
-				span(class="badge") {{chatroom}}.messageCount
+			li(ui-sref="chatrooms.show({ chatroom: chatroom})"
+				class="list-group-item text-center") {{chatroom}}
+				//- span(class="badge") {{chatroom}}.userCount
+				//- span(class="badge") {{chatroom}}.messageCount
 
 footer
 	form
-		.input-group
+		.form-group
 			input(
 				type="text"
 				name="chatroom-filter"
-				class="form-control"
+				class="form-control text-center"
 				placeholder="Filter chatrooms"
 				ng-model="chatroomFilter"
 			)
-			span.input-group-btn
-				button(type="button" class="btn btn-primary") Create chatroom
+			//- span.input-group-btn
+			//- 	button(type="button" class="btn btn-primary") Create chatroom
