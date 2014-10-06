@@ -76,6 +76,7 @@ module.exports = (app, io) ->
 		# Handle incoming chat messages
 		# Save them and broadcast them to chatroom members
 		socket.on "chat message", (message)->
+			return if not message or not message.sender or not message.message or not message.chatroom
 			debug "message from #{message.sender}: #{message.message}"
 
 			dbMessage = {
