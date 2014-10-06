@@ -42,6 +42,17 @@ module.exports = function (grunt) {
         }]
       }
     },
+    less: {
+      compile: {
+        files: [{
+          expand: true,
+          cwd: 'public/css',
+          src: ['**/*.less'],
+          dest: 'public/css',
+          ext: '.css'
+        }]
+      }
+    },
     develop: {
       server: {
         file: 'app.js'
@@ -56,6 +67,7 @@ module.exports = function (grunt) {
         files: [
           // 'app.coffee',
           '**/*.coffee',
+          '**/*.less',
           '**/*.jade'
           // 'config/*.coffee'
         ],
@@ -90,9 +102,10 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('default', ["compile", 'develop', 'watch']);
-  grunt.registerTask('compile', ["coffee", "jade"]);
+  grunt.registerTask('compile', ["coffee", "jade", "less"]);
 
 
   grunt.loadNpmTasks('grunt-contrib-coffee');
   grunt.loadNpmTasks('grunt-contrib-jade');
+  grunt.loadNpmTasks('grunt-contrib-less');
 };
