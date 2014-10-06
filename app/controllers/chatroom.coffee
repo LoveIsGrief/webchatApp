@@ -3,10 +3,17 @@ router = express.Router()
 
 module.exports = (app) ->
 
+	getUsersInChatroom = require("../../util/getUsersInChatroom")(app)
+
 	router.get "/:chatroom", (req, res, next) ->
 		chatroomName = req.params.chatroom
 		if chatroom = app.get("chatrooms")[chatroomName]
-			res.send chatroom
+
+			res.send {
+				name: chatroom.name
+				messages: chatroom.messages
+				users: getUsersInChatroom(chatroom.name)
+			}
 		else
 			res.status(404).send "Chatroom not found"
 

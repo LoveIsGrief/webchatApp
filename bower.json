@@ -16,5 +16,11 @@
     "angular-mocks": "~1.2.25",
     "socket.io-client": "~1.1.0",
     "bootstrap": "~3.2.0"
+  },
+  "resolutions": {
+    "angular": "1.2.26"
+  },
+  "devDependencies": {
+    "angular-cookies": "~1.2.26"
   }
 }
