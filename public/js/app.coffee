@@ -1,6 +1,7 @@
 webChatApp = angular.module "webChatApp", [
 		"ngSanitize"
 		"ui.router"
+		"ui.bootstrap"
 		"chatroomControllers"
 		"chatroomResources"
 		"socketServices"
