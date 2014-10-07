@@ -51,6 +51,13 @@ ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 		searched = user || $scope.user.name
 		$scope.chatroom.users.indexOf(searched) > -1
 
+	dateStringToDateTimeObject = (dateString)->
+		date = new Date dateString
+		{
+			time: "#{date.getHours()}:#{date.getMinutes()}:#{date.getSeconds()}.#{date.getMilliseconds()}"
+			date: "#{date.getFullYear()}-#{date.getMonth()}-#{date.getDay()}"
+		}
+
 	#
 	# scope methods
 	#
@@ -104,6 +111,8 @@ ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 	Socket.on "chat message", (message) ->
 		return if $scope.chatroom.name != message.for
 		delete message.for
+		# Parse datetime
+		message.datetime = dateStringToDateTimeObject message.datetime
 		console.log message
 		$scope.chatroom.messages.push message
 
@@ -122,6 +131,12 @@ ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 			i = $scope.chatroom.users.indexOf event.oldName
 			$scope.chatroom.users.splice i, 1, event.newName
 
+		# Rename user in all their messages
+		$scope.chatroom.messages.filter (message)->
+			message.sender == event.oldName
+		.forEach (message)->
+			message.sender = event.newName
+
 
 
 	#
@@ -139,6 +154,9 @@ ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 			else
 				# Mark that we are changing the username
 				$scope.user.changing = true
+
+			for message in $scope.chatroom.messages
+				message.datetime = dateStringToDateTimeObject message.datetime
 
 		,(httpResponse)->
 			console.error "Couldn't retrieve: #{chatroom}"

@@ -56,16 +56,20 @@ nav(class="navbar navbar-fixed-top navbar-default")
 				) Send
 
 #discussion-container(scroll-glue)
-	table.table
+	table(class="table table-striped table-hover")
+		caption
+			b Discussion
 		tr(ng-repeat="message in chatroom.messages")
-			td {{message.datetime}}
-			td {{message.sender}}
-			td
-				p(ng-bind-html="message.message")
+			td.left-table-column
+				span(class="badge pull-left") {{message.sender}}
+			td.center-table-column(ng-bind-html="message.message")
+			td(class="pull-right right-table-column")
+				span(tooltip="{{message.datetime.date}}" tooltip-append-to-body="true" tooltip-placement="left") {{message.datetime.time}}
+
 #user-container(scroll-glue)
 	table.table
-		tr
-			th Users
+		caption
+			b Users
 		tr(ng-repeat="user in chatroom.users")
-			td {{user}}
+			td.text-center {{user}}
 

@@ -21,13 +21,28 @@ body{
 	overflow-y: auto;
 }
 
+// This contains the user messages
+// Which in turn contains a table
+// TODO Media query to make this single column
 #discussion-container {
 	.filled-below-header;
 	width: 80%;
 	left: 0px;
 	overflow-y: auto;
+
+	& table{
+		width: 100%;
+		border-collapse: unset;
+
+		& td{
+			&.center-table-column, &.right-table-column{
+				width: 100%;
+			}
+		}
+	}
 }
 
+// TODO Media query to make this single column
 #user-container{
 	.filled-below-header;
 	width: 19%;
