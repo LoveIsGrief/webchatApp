@@ -94,11 +94,12 @@ ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 		$scope.toggleUsernameChanging()
 
 	$scope.sendMessage = ->
-		console.log Socket.emit
-		Socket.emit "chat message",
+		toSend =
 			chatroom: $scope.chatroom.name
 			sender: $scope.user.name
 			message: $scope.user.message
+		Socket.emit "chat message", toSend
+		console.log "Sending #{JSON.stringify toSend}"
 		$scope.user.message = ""
 
 
@@ -109,12 +110,18 @@ ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 
 	# Handle incoming messages
 	Socket.on "chat message", (message) ->
-		return if $scope.chatroom.name != message.for
-		delete message.for
+		if $scope.chatroom.name != message.for
+			console.log "That message is for #{message.for} not this chatroom, #{$scope.chatroom.name}!"
+			return
+
+		# We don't want to modify the input
+		copy = Object.clone message
+		delete copy.for
 		# Parse datetime
-		message.datetime = dateStringToDateTimeObject message.datetime
-		console.log message
-		$scope.chatroom.messages.push message
+		copy.datetime = dateStringToDateTimeObject copy.datetime
+
+		console.log "Received message object: #{JSON.stringify copy}"
+		$scope.chatroom.messages.push copy
 
 	# Handle new users in the chatroom
 	Socket.on "chatroom users", (users)->
