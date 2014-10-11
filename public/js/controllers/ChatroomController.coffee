@@ -94,11 +94,12 @@ ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 		$scope.toggleUsernameChanging()
 
 	$scope.sendMessage = ->
-		console.log Socket.emit
-		Socket.emit "chat message",
+		toSend =
 			chatroom: $scope.chatroom.name
 			sender: $scope.user.name
 			message: $scope.user.message
+		Socket.emit "chat message", toSend
+		console.log "Sending #{JSON.stringify toSend}"
 		$scope.user.message = ""
 
 
