@@ -54,9 +54,29 @@ module.exports = function (grunt) {
       }
     },
     develop: {
-      server: {
-        file: 'app.js'
-      }
+      production: {
+        file: 'app.js',
+        env: { NODE_ENV: "production"}
+      },
+      dev: {
+        file: 'app.js',
+        env: { NODE_ENV: "development"}
+      },
+      test: {
+        file: 'app.js',
+        env: { NODE_ENV: "test"}
+      },
+    },
+    protractor:{
+      options:{
+       configFile: "test/protractor.conf.coffee"
+
+      },
+      all:{}
+
+    },
+    protractor_webdriver:{
+      all:{}
     },
     watch: {
       options: {
@@ -71,7 +91,7 @@ module.exports = function (grunt) {
           '**/*.jade'
           // 'config/*.coffee'
         ],
-        tasks: [ "compile", 'develop', 'delayed-livereload']
+        tasks: [ "compile", "protractor_webdriver", "develop:dev", "protractor", 'delayed-livereload']
       },
       views: {
         files: [
@@ -101,11 +121,16 @@ module.exports = function (grunt) {
     }, 500);
   });
 
-  grunt.registerTask('default', ["compile", 'develop', 'watch']);
+  grunt.registerTask('default', ["compile", 'dev-test', 'watch']);
+  // dev-test runs the tests on a dev server (useful for the watch task)
+  grunt.registerTask('dev-test', ["protractor_webdriver", "develop:dev", "protractor"]);
+  grunt.registerTask('test', ["protractor_webdriver", "develop:test", "protractor"]);
   grunt.registerTask('compile', ["coffee", "jade", "less"]);
 
 
   grunt.loadNpmTasks('grunt-contrib-coffee');
   grunt.loadNpmTasks('grunt-contrib-jade');
   grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-protractor-runner');
+  grunt.loadNpmTasks('grunt-protractor-webdriver');
 };

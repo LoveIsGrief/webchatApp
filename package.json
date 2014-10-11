@@ -27,6 +27,8 @@
     "grunt-contrib-less": "^0.11.4",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-develop": "~0.4.0",
+    "grunt-protractor-runner": "^1.1.4",
+    "grunt-protractor-webdriver": "^0.1.9",
     "jasmine-node": "^1.14.5",
     "karma": "^0.12.23",
     "karma-chrome-launcher": "^0.1.4",
