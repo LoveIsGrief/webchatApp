@@ -18,12 +18,21 @@ describe "webChatApp", ->
 
 					pass: ret
 
-	it "should have a root with a list of chatrooms" , ->
-		browser.get "/"
+	describe 'homepage', ->
 
-		expect(browser.getTitle()).toEqual "Chatrooms"
+		beforeEach ->
+			browser.get "/"
 
-		chatrooms = element.all By.repeater('chatroom in chatrooms')
+		it "should have a root with a list of chatrooms" , ->
 
-		expect( chatrooms.count() ).toBeGreaterThan 0
-		expect( chatrooms.count() ).toBe 2
+			expect(browser.getTitle()).toEqual "Chatrooms"
+
+			chatrooms = element.all By.repeater('chatroom in chatrooms')
+
+			expect( chatrooms.count() ).toBeGreaterThan 0
+			expect( chatrooms.count() ).toBe 2
+
+			# Check if the chatrooms in the db are on the page
+			expect( chatrooms.getText()).toIntersectWith dbs
+
+
