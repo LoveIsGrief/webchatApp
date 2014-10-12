@@ -167,6 +167,8 @@ ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 			for message in $scope.chatroom.messages
 				message.datetime = dateStringToDateTimeObject message.datetime
 
+			document.title = "Chatrooms/#{data.name}"
+
 		,(httpResponse)->
 			console.error "Couldn't retrieve: #{chatroom}"
 
