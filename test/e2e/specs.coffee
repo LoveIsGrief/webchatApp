@@ -18,6 +18,10 @@ describe "webChatApp", ->
 
 					pass: ret
 
+		# Make sure we start clean for each test suite
+		browser.manage().deleteAllCookies();
+
+
 	describe 'homepage', ->
 
 		beforeEach ->
@@ -60,7 +64,7 @@ describe "webChatApp", ->
 			expect( messageTimeEls.count()).toBeGreaterThan 0
 			expect( messageTimeEls.first().getText()).toMatch /\d{2}:\d{2}:\d{2}.\d+/
 
-		it "should make user pick a name for first connection" , ->
+		it "should make the user pick a name for first connection" , ->
 
 			expect(browser.getTitle()).toEqual "Chatrooms/offtopic"
 
@@ -82,3 +86,49 @@ describe "webChatApp", ->
 			# No users in the chatroom
 			users = element.all By.repeater("user in chatroom.users")
 			expect( users.count()).toBe 1
+
+	describe "chatroom switching from offtopic" , ->
+
+		beforeEach ->
+			@username = "tester"
+
+			# A shortcut to username creation
+			browser.manage().addCookie "username", @username, "/", "localhost"
+			browser.get "/offtopic"
+
+		it "should keep username when switching", ->
+
+			nameDisplay = element By.binding "user.name"
+			expect(nameDisplay.getText()).toContain @username
+
+			browser.get "/ontopic"
+
+			nameDisplay = element By.binding "user.name"
+			expect(nameDisplay.getText()).toContain @username
+
+		it "should be able to send messages in each chatroom", ->
+
+			# Send message and check for presence in /offtopic
+			messageEl = element By.model "user.message"
+			messageText = "Message in offtopic"
+			messageEl.sendKeys messageText
+			messageEl.submit()
+
+			# Is message there?
+			messages = By.repeater("message in chatroom.messages")
+			messageContentEls = element.all messages.column "message.message"
+			expect(messageContentEls.last().getText()).toEqual messageText
+
+
+			# Repeat sending a message in /ontopic
+			browser.get "/ontopic"
+			messageEl = element By.model "user.message"
+			messageText = "Message in ontopic"
+			messageEl.sendKeys messageText
+			messageEl.submit()
+
+			# Is message there?
+			messages = By.repeater("message in chatroom.messages")
+			messageContentEls = element.all messages.column "message.message"
+			expect(messageContentEls.last().getText()).toEqual messageText
+
