@@ -67,44 +67,50 @@ module.exports = (grunt) ->
 			options:
 				configFile: "test/protractor.conf.coffee"
 
-			all: {}
+			watching:
+				options:
+					keepAlive:true
+			test: {}
 
 		protractor_webdriver:
-			all: {}
+			all:
+				options:
+					keepAlive: true
 
 		watch:
 			options:
 				nospawn: true
 				livereload: reloadPort
 
-			js:
+			test:
 				files: [
 
-					# 'app.coffee',
 					"**/*.coffee"
 					"**/*.less"
 					"**/*.jade"
 				]
 
-				# 'config/*.coffee'
 				tasks: [
 					"compile"
-					"protractor_webdriver"
-					"develop:dev"
-					"protractor"
+					"develop:test"
+					"protractor:watching"
 					"delayed-livereload"
 				]
 
-			views:
+			dev:
 				files: [
-					"app/views/*.jade"
-					"app/views/**/*.jade"
+					"<%= watch.test.files %>"
+				]
+				tasks: [
+					"compile"
+					"develop:dev"
+					"delayed-livereload"
 				]
 				options:
 					livereload: reloadPort
 
-	grunt.config.requires "watch.js.files"
-	files = grunt.config("watch.js.files")
+	grunt.config.requires "watch.test.files"
+	files = grunt.config("watch.test.files")
 	files = grunt.file.expand(files)
 	grunt.registerTask "delayed-livereload", "Live reload after the node server has restarted.", ->
 		done = @async()
@@ -122,19 +128,20 @@ module.exports = (grunt) ->
 	grunt.registerTask "default", [
 		"compile"
 		"dev-test"
-		"watch"
 	]
 
 	# dev-test runs the tests on a dev server (useful for the watch task)
 	grunt.registerTask "dev-test", [
 		"protractor_webdriver"
 		"develop:dev"
-		"protractor"
+		"protractor:test"
 	]
 	grunt.registerTask "test", [
+		"compile"
 		"protractor_webdriver"
 		"develop:test"
-		"protractor"
+		"protractor:watching"
+		"watch:test"
 	]
 	grunt.registerTask "compile", [
 		"coffee"
