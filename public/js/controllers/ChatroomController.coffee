@@ -5,6 +5,8 @@ ChatroomListController = ($scope, Chatroom) ->
 
 	console.log "Created ChatroomListController"
 
+	document.title = "Chatrooms"
+
 	$scope.chatrooms = []
 	$scope.chatroomFilter = ""
 
@@ -52,10 +54,10 @@ ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 		$scope.chatroom.users.indexOf(searched) > -1
 
 	dateStringToDateTimeObject = (dateString)->
-		date = new Date dateString
+		date = Date.create dateString
 		{
-			time: "#{date.getHours()}:#{date.getMinutes()}:#{date.getSeconds()}.#{date.getMilliseconds()}"
-			date: "#{date.getFullYear()}-#{date.getMonth()}-#{date.getDay()}"
+			time: date.format "{hh}:{mm}:{ss}.{ms}"
+			date: date.format "{yyyy}-{mm}-{dd}"
 		}
 
 	#
@@ -164,6 +166,8 @@ ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 
 			for message in $scope.chatroom.messages
 				message.datetime = dateStringToDateTimeObject message.datetime
+
+			document.title = "Chatrooms/#{data.name}"
 
 		,(httpResponse)->
 			console.error "Couldn't retrieve: #{chatroom}"
