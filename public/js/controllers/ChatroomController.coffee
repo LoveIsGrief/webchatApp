@@ -5,6 +5,8 @@ ChatroomListController = ($scope, Chatroom) ->
 
 	console.log "Created ChatroomListController"
 
+	document.title = "Chatrooms"
+
 	$scope.chatrooms = []
 	$scope.chatroomFilter = ""
 
