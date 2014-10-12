@@ -35,4 +35,28 @@ describe "webChatApp", ->
 			# Check if the chatrooms in the db are on the page
 			expect( chatrooms.getText()).toIntersectWith dbs
 
+	describe 'offtopic chatroom', ->
+
+		beforeEach ->
+			browser.get "/offtopic"
+
+		it "should display the offtopic chatroom" , ->
+
+			expect(browser.getTitle()).toEqual "Chatrooms/offtopic"
+
+			messages = By.repeater("message in chatroom.messages")
+			messageEls = element.all messages
+			expect( messageEls.count()).toBeGreaterThan 0
+
+			messageContentEls = element.all messages.column "message.message"
+			expect( messageContentEls.count()).toBeGreaterThan 0
+			expect( messageContentEls.first().getText()).toEqual "ROFL!"
+
+			messageUserEls = element.all messages.column "message.sender"
+			expect( messageUserEls.count()).toBeGreaterThan 0
+			expect( messageUserEls.first().getText()).toEqual "herp"
+
+			messageTimeEls = element.all messages.column "message.datetime"
+			expect( messageTimeEls.count()).toBeGreaterThan 0
+			expect( messageTimeEls.first().getText()).toMatch /\d{2}:\d{2}:\d{2}.\d+/
 
