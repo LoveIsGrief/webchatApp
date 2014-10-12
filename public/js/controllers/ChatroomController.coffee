@@ -54,10 +54,10 @@ ChatroomController = ($scope, Chatroom, $state, Socket, $cookies) ->
 		$scope.chatroom.users.indexOf(searched) > -1
 
 	dateStringToDateTimeObject = (dateString)->
-		date = new Date dateString
+		date = Date.create dateString
 		{
-			time: "#{date.getHours()}:#{date.getMinutes()}:#{date.getSeconds()}.#{date.getMilliseconds()}"
-			date: "#{date.getFullYear()}-#{date.getMonth()}-#{date.getDay()}"
+			time: date.format "{hh}:{mm}:{ss}.{ms}"
+			date: date.format "{yyyy}-{mm}-{dd}"
 		}
 
 	#
