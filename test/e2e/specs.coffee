@@ -40,7 +40,7 @@ describe "webChatApp", ->
 		beforeEach ->
 			browser.get "/offtopic"
 
-		it "should display the offtopic chatroom" , ->
+		it "should display the offtopic chatroom messages" , ->
 
 			expect(browser.getTitle()).toEqual "Chatrooms/offtopic"
 
@@ -60,3 +60,25 @@ describe "webChatApp", ->
 			expect( messageTimeEls.count()).toBeGreaterThan 0
 			expect( messageTimeEls.first().getText()).toMatch /\d{2}:\d{2}:\d{2}.\d+/
 
+		it "should make user pick a name for first connection" , ->
+
+			expect(browser.getTitle()).toEqual "Chatrooms/offtopic"
+
+			# No users in the chatroom
+			users = element.all By.repeater("user in chatroom.users")
+			expect( users.count()).toBe 0
+
+			# Pick a name
+			username = "tester"
+			nameEntry = element By.model "user.tempName"
+			nameEntry.sendKeys username
+			nameEntry.submit()
+
+			# Display show name
+			nameDisplay = element By.binding "user.name"
+			# It will display "<name>:" therefore "toContain"
+			expect(nameDisplay.getText()).toContain username
+
+			# No users in the chatroom
+			users = element.all By.repeater("user in chatroom.users")
+			expect( users.count()).toBe 1
