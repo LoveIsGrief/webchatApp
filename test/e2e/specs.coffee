@@ -7,17 +7,16 @@ dbs = Object.keys db
 describe "webChatApp", ->
 
 	beforeEach ->
-			beforeEach ->
-				@addMatchers
-					toIntersectWith: ->
-						compare: (actual,expected)->
-							ret = true
-							for item of expected
-								unless actual[item]
-									ret = false
-									break
+		@addMatchers
+			toIntersectWith: ->
+				compare: (actual,expected)->
+					ret = true
+					for item of expected
+						unless actual[item]
+							ret = false
+							break
 
-							pass: ret
+					pass: ret
 
 	it "should have a root with a list of chatrooms" , ->
 		browser.get "/"
